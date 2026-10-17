@@ -1,0 +1,503 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Derby Pack-List</title>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Derby Pack">
+<meta name="theme-color" content="#7c3aed">
+<link rel="apple-touch-icon" href="icons/star-skate.png">
+<link rel="icon" href="icons/star-skate.png">
+<link rel="manifest" href="manifest.json">
+<style>
+  :root{
+    --bg:#f7f5fb; --card:#ffffff; --text:#1c1726; --sub:#6b6478;
+    --accent:#7c3aed; --accent-ink:#ffffff; --border:#e4e0ee; --danger:#c0392b;
+    box-sizing:border-box;
+    padding-top:env(safe-area-inset-top,0px);
+    padding-bottom:env(safe-area-inset-bottom,0px);
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#17131f; --card:#231d2e; --text:#f1eef7; --sub:#a79fba;
+      --accent:#a78bfa; --accent-ink:#17131f; --border:#342c44;
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#17131f; --card:#231d2e; --text:#f1eef7; --sub:#a79fba;
+    --accent:#a78bfa; --accent-ink:#17131f; --border:#342c44;
+  }
+  *{box-sizing:border-box}
+  html{scroll-padding-top:env(safe-area-inset-top,0px)}
+  body{
+    margin:0; background:var(--bg); color:var(--text);
+    font:15px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+    min-height:100%;
+  }
+  header{
+    position:sticky; top:0; z-index:5;
+    padding:calc(14px + env(safe-area-inset-top,0px)) 16px 14px;
+    background:var(--accent); color:var(--accent-ink);
+  }
+  header h1{margin:0; font-size:19px}
+  header p{margin:2px 0 0; font-size:12.5px; opacity:.85}
+  main{max-width:560px; margin:0 auto; padding:14px 14px 48px}
+  .card{background:var(--card); border:1px solid var(--border); border-radius:14px; padding:14px; margin-bottom:12px}
+  .card h2{margin:0 0 10px; font-size:14.5px; text-transform:uppercase; letter-spacing:.03em; color:var(--sub)}
+  label{display:block; font-size:13.5px; margin:10px 0 4px}
+  label.row{display:flex; align-items:center; gap:8px; margin:8px 0}
+  label.row input[type=checkbox]{width:18px; height:18px; flex:none}
+  input[type=text],input[type=number],input[type=date],select,textarea{
+    width:100%; padding:9px 10px; border-radius:9px; border:1px solid var(--border);
+    background:var(--bg); color:var(--text); font-size:15px;
+  }
+  textarea{font-family:ui-monospace,Menlo,monospace; font-size:12.5px; min-height:110px}
+  .hint{font-size:12px; color:var(--sub); margin-top:3px}
+  button{
+    font-size:14.5px; padding:9px 14px; border-radius:10px; border:1px solid var(--border);
+    background:var(--bg); color:var(--text); cursor:pointer;
+  }
+  button.primary{background:var(--accent); color:var(--accent-ink); border-color:transparent; font-weight:600}
+  button.small{padding:6px 10px; font-size:13px}
+  .wheelgrid{display:grid; gap:6px; margin-top:8px}
+  .wheelgrid label{
+    display:flex; align-items:center; gap:8px; margin:0; padding:8px 10px;
+    border:1px solid var(--border); border-radius:9px; font-size:13.5px;
+  }
+  .wheelgrid span.fit{margin-left:auto; color:var(--sub); font-size:12px}
+  details summary{cursor:pointer; font-size:13px; color:var(--sub); margin-top:4px}
+  #savedVenues{display:flex; flex-wrap:wrap; gap:6px; margin-top:8px}
+  .chip{padding:5px 10px; border-radius:999px; border:1px solid var(--border); font-size:12.5px; cursor:pointer}
+  .chip.active{background:var(--accent); color:var(--accent-ink); border-color:transparent}
+  #output h3{font-size:13px; text-transform:uppercase; letter-spacing:.03em; color:var(--sub); margin:14px 0 6px}
+  #output h3:first-child{margin-top:0}
+  #output label.row{padding:6px 0; border-bottom:1px solid var(--border)}
+  #output label.row:last-child{border-bottom:none}
+  #listTitle{font-weight:700; margin-bottom:4px}
+  .err{color:var(--danger); font-size:12.5px; margin-top:4px}
+  @media print {
+    header, .card:not(#output), #pdfBtn { display: none !important; }
+    #output { display: block !important; border: none; padding: 0; }
+    body { background: #fff; color: #000; }
+  }
+</style>
+</head>
+<body>
+<header>
+  <h1>🛼 Derby Pack-List</h1>
+  <p>It's (about to be) Gameday! Here's a handy-dandy helper for the packlist :)</p>
+</header>
+<main>
+
+  <div class="card">
+    <div id="savedVenues"></div>
+    <h2>Where's the bout at</h2>
+    <label for="venueSelect">Choose a venue</label>
+    <select id="venueSelect">
+      <option value="">— pick a saved venue, or type a new name below —</option>
+    </select>
+    <label for="gameDate">Game date</label>
+    <input id="gameDate" type="date">
+
+    <p class="hint" id="venueSummary" style="display:none"></p>
+
+    <div id="newVenueFields">
+      <label for="venueName">Venue name</label>
+      <input id="venueName" type="text" placeholder="e.g. The Hangar">
+      <label for="venueLat">Latitude, Longitude <span class="hint">(necessary for the weather check below to work)</span></label>
+      <div style="display:flex; gap:8px">
+        <input id="venueLat" type="number" step="any" placeholder="51.4556">
+        <input id="venueLon" type="number" step="any" placeholder="7.0116">
+      </div>
+      <label for="recHardness">Recommended wheel hardness, e.g. 90-95</label>
+      <input id="recHardness" type="text" placeholder="90-95">
+      <button class="small" id="saveVenueBtn" style="margin-top:10px">Save this venue</button>
+      <p class="hint" id="venueHint">Newly Saved venues live only in this browser. (remember to save any updates to the venues.json on github before pushing any updates that reset the cache (and remember to make thid part more user friendly when I get around to sharing with peeps)</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Jersey &amp; stay</h2>
+    <label for="jerseyColor">Jersey color other than black/white needed? (leave blank if black & white covers it)</label>
+    <input id="jerseyColor" type="text" placeholder="e.g. Red">
+    <label class="row"><input type="checkbox" id="overnight"> Spending the night</label>
+    <label class="row" id="sleepingBagRow" style="display:none; margin-left:26px"><input type="checkbox" id="sleepingBag"> Need a sleeping bag</label>
+  </div>
+
+  <div class="card">
+    <h2>Weather</h2>
+    <button class="small" id="fetchWeatherBtn">Fetch forecast for this venue &amp; date</button>
+    <p class="hint" id="weatherStatus">Needs a saved venue with coordinates, and a date within about 16 days. Otherwise, tick manually below.</p>
+    <label class="row"><input type="checkbox" id="wCold"> Cold</label>
+    <label class="row"><input type="checkbox" id="wCool"> Cool</label>
+    <label class="row"><input type="checkbox" id="wHot"> Hot</label>
+    <label class="row"><input type="checkbox" id="wWet"> Rain or snow expected</label>
+  </div>
+
+  <div class="card">
+    <h2>Wheels</h2>
+    <label for="mountedSelect">Which wheels are on your skates right now?</label>
+    <select id="mountedSelect"></select>
+    <div id="customMountedRow" style="display:none">
+      <label for="customMounted">Their hardness (e.g. 92, or 91/93 for a mix)</label>
+      <input id="customMounted" type="text" placeholder="92">
+    </div>
+    <div id="confidenceRow" style="display:none">
+      <label for="confidence">Your wheels are within the recommendation. How sure are you they'll work?</label>
+      <select id="confidence">
+        <option value="none">Confident - no backups needed</option>
+        <option value="0" selected>Fairly sure - show backups from the recommended range</option>
+        <option value="3">Unsure - also show sets just outside the range</option>
+      </select>
+    </div>
+    <p class="hint">Backup options to consider:</p>
+    <div class="wheelgrid" id="wheelOptions"></div>
+  </div>
+
+  <div class="card">
+    <button class="primary" id="generateBtn" style="width:100%; padding:12px">Generate packing list</button>
+    <button id="pdfBtn" style="width:100%; padding:10px; margin-top:8px">Export as PDF</button>
+  </div>
+
+  <div class="card" id="output" style="display:none"></div>
+
+  <details class="card">
+    <summary>Advanced: edit the base item list (JSON)</summary>
+    <p class="hint">Edit and press Save. This changes what's packed by default — gear, textiles, hygiene, etc.</p>
+    <textarea id="configBox" spellcheck="false"></textarea>
+    <div style="margin-top:8px; display:flex; gap:8px">
+      <button class="small" id="saveConfigBtn">Save</button>
+      <button class="small" id="resetConfigBtn">Reset to defaults</button>
+    </div>
+    <p class="err" id="configErr"></p>
+  </details>
+
+</main>
+
+<script>
+// ---------- Defaults (same data as original vsCode Python version) ----------
+const DEFAULT_CONFIG = {
+  categoryOrder: ["Derby Essentials: Gear","Derby Essentials: Weiteres","Textiles","Health & Hygiene","Food & drink","Other"],
+  baseItems: {
+    "Derby Essentials: Gear": ["Skates","Helmet","Mouthguard","Knee pads","Elbow pads","Wrist guards"],
+    "Derby Essentials: Weiteres": ["Inhaler","Armbands","Water bottle","Water bottle","Traubenzucker or equivalent","ISO tablets","Scrimmage shirt white","Scrimmage shirt black","Toe Stop Tool","Y-Tool"],
+    "Textiles": ["Undies","Bra","Socks","Tshirt 4 after game","Pants 4 after game"],
+    "Health & Hygiene": ["Towel","Shampoo / soap","Shower shoes","Deodorant","Bandaids + blister care","Ibuprofen"],
+    "Food & drink": ["Applesauce packets","Sandwich","Utensils","Coffee cup"],
+    "Other": ["Sewing kit","Notebook& pen(cil)","Pollies","Emergency Pack"]
+  },
+  overnightItems: {
+    "Textiles": ["Pajamas","Undies","Shirt","Pants"],
+    "Health & Hygiene": ["Toothbrush","Toothpaste","boob cream","baby powder","Meds","glasses or change of contacts"],
+    "Other": ["Phone charger","Medication"]
+  },
+  sleepingBagItems: { "Other": ["Sleeping bag"] },
+  weatherItems: {
+    cold: { "Textiles": ["Warm layers","Hat","Gloves"] },
+    cool: { "Textiles": ["Light jacket","sweatpants"] },
+    hot:  { "Textiles": ["Cooling towel"] },
+    wet:  { "Textiles": ["Rain jacket"], "Other": ["Umbrella"] }
+  },
+  wheelSets: [
+    {name:"Wheels 88A", low:88, high:88},
+    {name:"Chaya Wheels - 92A", low:92, high:92},
+    {name:"Wheels - 91/93A", low:91, high:93},
+    {name:"Wheels 93A", low:93, high:93},
+    {name:"Wheels - 93/95A", low:93, high:95}
+  ],
+  wheelMin: 80, wheelMax: 100
+};
+
+let CONFIG = loadJSON("derbyPackConfig", DEFAULT_CONFIG);
+
+// Venues: for now just the one central json - remember to come back latet & improve 
+let venuesCache = loadJSON("derbyPackVenues", {});
+
+function loadJSON(key, fallback){
+  try { const raw = localStorage.getItem(key); return raw ? JSON.parse(raw) : structuredClone(fallback); }
+  catch(e){ return structuredClone(fallback); }
+}
+function saveJSON(key, value){ try { localStorage.setItem(key, JSON.stringify(value)); } catch(e){} }
+
+// ---------- Range helpers (like the original parse_range / gap / fully_inside) ----------
+function parseRange(raw){
+  const nums = (raw.match(/\d+(?:[.,]\d+)?/g) || []).map(n => parseFloat(n.replace(",", ".")));
+  if (nums.length !== 1 && nums.length !== 2) return null;
+  nums.sort((a,b)=>a-b);
+  return [nums[0], nums[nums.length-1]];
+}
+function describeRange(low, high){ return low === high ? `${low}A` : `${low}-${high}A`; }
+function gap(set, low, high){
+  if (set.high < low) return low - set.high;
+  if (set.low > high) return set.low - high;
+  return 0;
+}
+function fullyInside(set, low, high){ return low <= set.low && set.high <= high; }
+
+// ---------- Venue UI ----------
+const $ = id => document.getElementById(id);
+let selectedVenueName = null;
+
+function renderVenueChips(){
+  const sel = $("venueSelect");
+  const current = sel.value;
+  sel.innerHTML = '<option value="">— pick a saved venue, or type a new name below —</option>';
+  Object.keys(venuesCache).sort().forEach(name => {
+    const opt = document.createElement("option");
+    opt.value = name;
+    opt.textContent = name;
+    sel.appendChild(opt);
+  });
+  if (venuesCache[current]) sel.value = current;
+}
+async function loadSharedVenues(){
+  try {
+    const res = await fetch("venues.json", { cache: "no-store" });
+    if (!res.ok) return;
+    const shared = await res.json();
+    venuesCache = { ...shared, ...venuesCache };
+    renderVenueChips();
+    if (selectedVenueName && venuesCache[selectedVenueName]) applyVenue(selectedVenueName);
+  } catch(e){ /* offline, file missing, or opened via file:// — just use local venues */ }
+}
+
+function applyVenue(name){
+  selectedVenueName = name;
+  const v = venuesCache[name];
+  $("venueSelect").value = name;
+  $("venueName").value = name;
+  $("venueLat").value = v.lat ?? "";
+  $("venueLon").value = v.lon ?? "";
+  $("recHardness").value = v.hardness ?? "";
+  updateVenueFieldsVisibility();
+  updateWheelUI();
+}
+
+function updateVenueFieldsVisibility(){
+  const picked = $("venueSelect").value;
+  const isExisting = picked && venuesCache[picked];
+  $("newVenueFields").style.display = isExisting ? "none" : "block";
+
+  const summary = $("venueSummary");
+  if (isExisting){
+    const v = venuesCache[picked];
+    const coords = (v.lat != null && v.lon != null) ? `${v.lat}, ${v.lon}` : "no coordinates saved";
+    summary.textContent = `${v.name} — ${coords} — recommended hardness: ${v.hardness || "not set"}`;
+    summary.style.display = "block";
+  } else {
+    summary.style.display = "none";
+  }
+}
+
+
+$("venueSelect").onchange = () => {
+  const name = $("venueSelect").value;
+  if (name) applyVenue(name);
+  else {
+    selectedVenueName = null;
+    updateVenueFieldsVisibility();
+  }
+};
+$("saveVenueBtn").onclick = () => {
+  const name = $("venueName").value.trim();
+  if (!name) return;
+  venuesCache[name] = {
+    name,
+    lat: $("venueLat").value ? parseFloat($("venueLat").value) : null,
+    lon: $("venueLon").value ? parseFloat($("venueLon").value) : null,
+    hardness: $("recHardness").value.trim() || null
+  };
+  saveJSON("derbyPackVenues", venuesCache);
+  selectedVenueName = name;
+  renderVenueChips();
+  $("venueSelect").value = name;
+  undateVenueFieldsVisibility();
+};
+$("gameDate").valueAsDate = new Date();
+
+// ---------- Overnight toggle ----------
+$("overnight").onchange = e => { $("sleepingBagRow").style.display = e.target.checked ? "flex" : "none"; };
+
+// ---------- Wheels UI ----------
+function populateMountedSelect(){
+  const sel = $("mountedSelect"); sel.innerHTML = "";
+  CONFIG.wheelSets.forEach((s,i) => {
+    const o = document.createElement("option"); o.value = i; o.textContent = s.name; sel.appendChild(o);
+  });
+  const o = document.createElement("option"); o.value = "custom"; o.textContent = "Something else (not in my list)";
+  sel.appendChild(o);
+}
+$("mountedSelect").onchange = updateWheelUI;
+$("customMounted").oninput = updateWheelUI;
+$("recHardness").oninput = updateWheelUI;
+$("confidence").onchange = updateWheelUI;
+
+function getMounted(){
+  const sel = $("mountedSelect").value;
+  if (sel === "custom"){
+    const r = parseRange($("customMounted").value);
+    return r ? {name:null, low:r[0], high:r[1], index:-1} : null;
+  }
+  const s = CONFIG.wheelSets[parseInt(sel,10)];
+  return s ? {...s, index: parseInt(sel,10)} : null;
+}
+
+function updateWheelUI(){
+  $("customMountedRow").style.display = $("mountedSelect").value === "custom" ? "block" : "none";
+  const mounted = getMounted();
+  const rec = parseRange($("recHardness").value);
+  const optionsBox = $("wheelOptions"); optionsBox.innerHTML = "";
+  const confRow = $("confidenceRow");
+
+  if (!rec){
+    confRow.style.display = "none";
+    optionsBox.innerHTML = '<p class="hint">Enter a recommended hardness above to see backup options.</p>';
+    return;
+  }
+  const [recLow, recHigh] = rec;
+  const within = mounted && rec && recLow <= mounted.low && mounted.high <= recHigh;
+  confRow.style.display = within ? "block" : "none";
+
+  let margin = 0;
+  if (within){
+    const v = $("confidence").value;
+    if (v === "none"){ optionsBox.innerHTML = '<p class="hint">No backups needed.</p>'; return; }
+    margin = parseInt(v, 10);
+  }
+
+  const others = CONFIG.wheelSets.filter((s,i) => !mounted || mounted.index !== i);
+  let searchLow = recLow - margin, searchHigh = recHigh + margin;
+  let candidates = others.filter(s => gap(s, searchLow, searchHigh) === 0);
+  let note = "";
+  if (candidates.length === 0){
+    note = `<p class="hint">None of your sets are within ${describeRange(searchLow, searchHigh)} — showing all, closest first.</p>`;
+    candidates = others.slice();
+  }
+  candidates.sort((a,b) => gap(a, recLow, recHigh) - gap(b, recLow, recHigh) || (fullyInside(a,recLow,recHigh)===fullyInside(b,recLow,recHigh) ? a.low-b.low : (fullyInside(a,recLow,recHigh)?-1:1)));
+
+  optionsBox.innerHTML = note;
+  candidates.forEach(s => {
+    const fit = fullyInside(s, recLow, recHigh) ? "in range" : (gap(s,recLow,recHigh)===0 ? "partly in range" : `${gap(s,recLow,recHigh)}A outside`);
+    const lbl = document.createElement("label");
+    lbl.innerHTML = `<input type="checkbox" data-wheel="${s.name}"> ${s.name} <span class="fit">${fit}</span>`;
+    optionsBox.appendChild(lbl);
+  });
+}
+
+// ---------- Build & render the list ----------
+function addTo(map, category, items){
+  if (!map[category]) map[category] = new Map();
+  items.forEach(item => map[category].set(item, (map[category].get(item)||0)+1));
+}
+
+$("generateBtn").onclick = () => {
+  const packing = {};
+  CONFIG.categoryOrder.forEach(c => packing[c] = new Map());
+
+  Object.entries(CONFIG.baseItems).forEach(([c,items]) => addTo(packing, c, items));
+
+  const jersey = $("jerseyColor").value.trim();
+  if (jersey) addTo(packing, "Derby Essentials: Weiteres", [`${jersey} jersey`]);
+
+  if ($("overnight").checked){
+    Object.entries(CONFIG.overnightItems).forEach(([c,items]) => addTo(packing, c, items));
+    if ($("sleepingBag").checked){
+      Object.entries(CONFIG.sleepingBagItems).forEach(([c,items]) => addTo(packing, c, items));
+    }
+  }
+  ["cold","cool","hot","wet"].forEach(key => {
+    const id = "w" + key[0].toUpperCase() + key.slice(1);
+    if ($(id).checked) Object.entries(CONFIG.weatherItems[key]).forEach(([c,items]) => addTo(packing, c, items));
+  });
+  $("pdfBtn").onclick = () => {
+    if ($("output").style.display === "none") { alert("Generate the list first."); return; }
+    window.print();
+  };
+
+  document.querySelectorAll('#wheelOptions input[type=checkbox]:checked').forEach(cb => {
+    addTo(packing, "Derby Essentials: Gear", [cb.dataset.wheel]);
+  });
+
+  const out = $("output");
+  const venue = $("venueName").value.trim() || "Game day";
+  const date = $("gameDate").value || "";
+  let html = `<div id="listTitle">${venue}${date ? ", " + date : ""}</div>`;
+  CONFIG.categoryOrder.forEach(c => {
+    const m = packing[c];
+    if (!m || m.size === 0) return;
+    html += `<h3>${c}</h3>`;
+    m.forEach((count, item) => {
+      html += `<label class="row"><input type="checkbox"> ${item}${count>1 ? " ×"+count : ""}</label>`;
+    });
+  });
+  out.innerHTML = html;
+  out.style.display = "block";
+  out.scrollIntoView({behavior:"smooth", block:"start"});
+};
+
+// ---------- Advanced config editor ----------
+function refreshConfigBox(){ $("configBox").value = JSON.stringify(CONFIG, null, 2); }
+$("saveConfigBtn").onclick = () => {
+  try {
+    const parsed = JSON.parse($("configBox").value);
+    CONFIG = parsed;
+    saveJSON("derbyPackConfig", CONFIG);
+    $("configErr").textContent = "";
+    populateMountedSelect(); updateWheelUI();
+  } catch(e){ $("configErr").textContent = "That isn't valid JSON: " + e.message; }
+};
+$("resetConfigBtn").onclick = () => {
+  CONFIG = structuredClone(DEFAULT_CONFIG);
+  saveJSON("derbyPackConfig", CONFIG);
+  refreshConfigBox(); populateMountedSelect(); updateWheelUI();
+};
+
+// ---------- Live weather (Open-Meteo API; same thresholds as the Python script) ----------
+const COLD_BELOW = 10, COOL_BELOW = 20, HOT_ABOVE = 28, WET_ABOVE = 1.0;
+
+$("fetchWeatherBtn").onclick = async () => {
+  const status = $("weatherStatus");
+  const lat = parseFloat($("venueLat").value), lon = parseFloat($("venueLon").value);
+  const date = $("gameDate").value;
+  if (isNaN(lat) || isNaN(lon) || !date){
+    status.textContent = "Add this venue's latitude/longitude and a date first, then fetch.";
+    return;
+  }
+  status.textContent = "Fetching…";
+  try {
+    const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}` +
+      `&daily=temperature_2m_min,temperature_2m_max,precipitation_sum&timezone=auto` +
+      `&start_date=${date}&end_date=${date}`;
+    const res = await fetch(url);
+    if (!res.ok) throw new Error("bad response");
+    const daily = (await res.json()).daily;
+    const low = daily.temperature_2m_min[0], high = daily.temperature_2m_max[0], precip = daily.precipitation_sum[0];
+    if ([low, high, precip].some(v => v == null)) throw new Error("no data for that date");
+    $("wCold").checked = low <= COLD_BELOW;
+    $("wCool").checked = low <= COOL_BELOW;
+    $("wHot").checked = high >= HOT_ABOVE;
+    $("wWet").checked = precip >= WET_ABOVE;
+    status.textContent = `Forecast: ${low.toFixed(0)}–${high.toFixed(0)}°C, ${precip.toFixed(1)}mm — checkboxes updated. Review before packing.`;
+  } catch (e){
+    status.textContent = "Couldn't fetch a forecast for that date (offline, or beyond the ~16-day forecast window) — tick manually instead.";
+  }
+};
+
+// ---------- Init ----------
+renderVenueChips();
+loadSharedVenues();
+updateVenueFieldsVisibility();
+populateMountedSelect();
+refreshConfigBox();
+updateWheelUI();
+
+if ("serviceWorker" in navigator){
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("service-worker.js").catch(() => {});
+  });
+}
+</script>
+</body>
+</html>
