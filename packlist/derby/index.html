@@ -306,7 +306,6 @@ async function loadSharedVenues(){
 function applyVenue(name){
   selectedVenueName = name;
   const v = venuesCache[name];
-  $("countrySelect").onchange = renderVenueChips;
   $("venueSelect").value = name;
   $("venueName").value = name;
   $("venueLat").value = v.lat ?? "";
@@ -332,6 +331,7 @@ function updateVenueFieldsVisibility(){
   }
 }
 
+$("countrySelect").onchange = renderVenueChips;
 
 $("venueSelect").onchange = () => {
   const name = $("venueSelect").value;
@@ -354,7 +354,7 @@ $("saveVenueBtn").onclick = () => {
   selectedVenueName = name;
   renderVenueChips();
   $("venueSelect").value = name;
-  undateVenueFieldsVisibility();
+  updateVenueFieldsVisibility();
 };
 $("gameDate").valueAsDate = new Date();
 
