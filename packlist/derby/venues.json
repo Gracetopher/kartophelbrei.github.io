@@ -1,0 +1,142 @@
+{
+  "Köln":{
+    "name": "Montessori-Gymnasium Köln",
+    "lat": 50.9633517,
+    "lon": 6.9008746,
+    "country": "DE",
+    "hardness": "91-96",
+    "recommended_hardness_notes": "Sticky sportshall floor.",
+    "additional_notes": "Venue is in a residential area, there are a few parking spots in side streets.",
+    "contact": "Phone in case of problem Jenny 0172 7717433"
+  },
+    "Darmstadt": {
+    "name": "LLZ (Landesleistungszentrum für Rollsport des HRIV)",
+    "lat": 49.88445865617738,
+    "lon": 8.665763684425023,
+    "country": "DE",
+    "hardness": "90-95",
+    "recommended_hardness_notes": "NA",
+    "additional_notes": "NA",
+    "contact": "Phone in case of problem +49 160 1403746"
+  },
+  "Hamburg - HARD": {
+    "name": "Gymnasium Christianeum",
+    "lat": 53.5581937545174,
+    "lon": 9.8729666423282,
+    "country": "DE",
+    "hardness": "84-91",
+    "recommended_hardness_notes": "The floor that we bout on is a pretty good sports court but the floor is a bit slippery. We usually use wheels between 84 and max 91 (91 only in combination).",
+    "additional_notes": "Emergency Card: Please do bring your Emergency card, so that we are able to help quickly if anything happen to you. Please Note that unfortunately there are no single stalls in the shower or changing room.",
+    "contact": "Phone in case of problem +49 176 97324465"
+  },
+  "Copenhagen":{
+    "name": "Dansborg Hallen",
+    "lat": 55.8085272,
+    "lon": 11.9858164,
+    "country": "DK",
+    "hardness": "91-95",
+    "recommended_hardness_notes": "Venue is hardwood floor with a smattering of Handball resin.",
+    "additional_notes": "NA",
+    "contact": "Se7ens Tournament Responsible: NURGLE +4523461553"
+  },
+  "Utrecht":{
+    "name": "Disaster Dome",
+    "lat": 52.131791,
+    "lon": 5.0832359,
+    "country": "NL",
+    "hardness": "90-95",
+    "recommended_hardness_notes": "The floor is hard plastic (over top of concrete), smooth. Can be slippery in damp weather.",
+    "additional_notes": "No AC, temp is same as outside (or worse). Dressing room keys are managed by a the staff at the entrance. Skating from the changing rooms to the venue is not permitted. We recommend to not leave valueable items in the dressing rooms. Flip-flops recommended for showering.",
+    "contact": "come back"
+  },
+  "Eindhoven":{
+    "name": "RC de Lichtstad",
+    "lat": 51.4396772,
+    "lon": 5.4525917,
+    "country": "NL",
+    "hardness": "84-92",
+    "recommended_hardness_notes": "Our venue has a very smooth, concrete floor. 84-92A wheels are advised.",
+    "additional_notes": "We recommend not leaving any valuables in the changing room. We recommend wearing flip-flops in the shower.",
+    "contact": "come back"
+  },
+  "Arnhem": {
+    "name": "Sporthal Elderveld",
+    "lat": 51.9605335,
+    "lon": 5.8607685,
+    "country": "NL",
+    "hardness": "95-99",
+    "recommended_hardness_notes": "Our floor is smooth but grippy at the same time. You can make speed but it's hard to plowstop.",
+    "additional_notes": "NA",
+    "contact": "Mail: interleague@arnhemfallenangels.nl. Emergency contact on Game day: +31 6 39649829 Rubiprofen"
+  },
+  "(Arnhem - 2026 Spring Fling)":{
+    "name": "Sporthal Valkenhuizen",
+    "lat": 52.0051575,
+    "lon": 5.9281258,
+    "country": "NL",
+    "hardness": "95-99",
+    "recommended_hardness_notes": "Our floor is smooth but grippy at the same time. You can make speed but it's hard to plowstop.",
+    "additional_notes": "NA",
+    "contact": "Mail: interleague@arnhemfallenangels.nl"    
+  },
+  "St. Pauli":{
+    "name": "Sporthalle Budapester Straße",
+    "lat": 53.5553202,
+    "lon": 9.9641016,
+    "country": "DE",
+    "hardness": "91-96",
+    "recommended_hardness_notes": "The floor is a good sports court, but a bit sticky. We recommend wheels with a hardness from 91 – 96.",
+    "additional_notes": "The venue has four gender binary changing rooms, toilets and group showers.",
+    "contact": "Phone in case of problem Pain Not Found: +49 176 97324465 - Please note that the cell phone reception is not very good inside the venue"
+  },
+  "Essen - Raumerstr.":{
+    "name": "Rollsport Arena, Raumerstr. 51, 45144 Essen",
+    "lat": 51.4516906,
+    "lon": 6.9409447,
+    "country": "DE",
+    "hardness": "84-92",
+    "recommended_hardness_notes": "Type of floor: Polished Concrete. Advice about the floor: Depends on weather, slippery in dry weather conditions",
+    "additional_notes": "When cold outside, colder inside. When hot outside, hotter inside.",
+    "contact": "..."
+  },
+  "Essen - Gruga":{
+    "name": "Grugahalle, Virchowstr. 130, 45147 Essen",
+    "lat": 51.4257346,
+    "lon": 6.96391,
+    "country": "DE",
+    "hardness": "92-98",
+    "recommended_hardness_notes": "Stickier floor, especially designed for rollerskating (Für die Trainings auf der Fläche in der Gruga, die eher „sticky“ ist, empfehlen sich härtere Rollen (92A-98A).",
+    "additional_notes": "Not insulated or climatized, so can especially in the winter get very cold. Limited shower space - game days depend on scheduling well.",
+    "contact": "..."
+  },
+  "Münster":{
+    "name": "Ballsporthalle - Horstmarer Landweg 68B, 48149 Münster",
+    "lat": 51.9724865,
+    "lon": 7.5979323,
+    "country": "DE",
+    "hardness": "94-97",
+    "recommended_hardness_notes": "Der Boden ist für Ballsportgeeignet, d.h. sehr sticky. Wir empfehlen eine Rollenhärte von 94-97. / The floor is sticky. We suggest wheels 94-97",
+    "additional_notes": "Es wird pro Team eine Umkleide mit Duschen geben, sowie eine Umkleide mit Duschen für Officials. Es wird Tribünen für Personen, die gerne zuschauen möchten geben. / There will be one changing room with showers per team and one changing room with showers for officials. There will be stands for people who would like to watch.",
+    "contact": ".."
+  },
+  "Mainz":{
+    "name": "TSV Schott",
+    "lat": 50.0107896,
+    "lon": 8.2236765,
+    "country": "DE",
+    "hardness": "88-95",
+    "recommended_hardness_notes": "88A-95A, je nach Sauberkeit, depending on cleaning",
+    "additional_notes": "changing rooms and shower rooms (no single shower cabins), one additional allgender toilet (can be used as one person changing room aswell). The entrance is up the staircase and then the first door on the right side - You have to walk through the whole 'Otto-Schott-Halle' (that's where the changing rooms and toilets are) and then go straight to the end until you reach some doors and a staircase that goes down to the 'Erich-Schott-Halle'. That's where we are! There are no changing rooms and toilets in our hall downstairs! We advise to take your valuables with you to the scrimmage hall.",
+    "contact": "https://www.instagram.com/maniacmonstersmainz"
+  },
+  "Namur":{
+    "name": "Centre Sportif de Namur - TABORA",
+    "lat": 50.4676747,
+    "lon": 4.8509084,
+    "country": "BE",
+    "hardness": "84-93",
+    "recommended_hardness_notes": "Floor Linoléum (!!! Cover Kneepad !!!)",
+    "additional_notes": "Very nice hall, very large. Keys for every changing room available up front. Changing rooms are downstairs, skates are not allowed to be worn on stairs.",
+    "contact": "Emergency phone General NINON +32 470 03 49 11"
+  }
+}
