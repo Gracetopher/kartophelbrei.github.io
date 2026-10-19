@@ -94,6 +94,10 @@
   <div class="card">
     <div id="savedVenues"></div>
     <h2>Where's the bout at</h2>
+    <label for="countrySelect">Country</label>
+    <select id="countrySelect">
+      <option value="">All countries</option>
+    </select>
     <label for="venueSelect">Choose a venue</label>
     <select id="venueSelect">
       <option value="">— pick a saved venue, or type a new name below —</option>
@@ -240,11 +244,47 @@ function fullyInside(set, low, high){ return low <= set.low && set.high <= high;
 const $ = id => document.getElementById(id);
 let selectedVenueName = null;
 
+const MIN_VENUES_PER_COUNTRY = 3;
+
+function renderCountryOptions(){
+  const sel = $("countrySelect");
+  const current = sel.value;
+
+  const counts = {};
+  Object.values(venuesCache).forEach(v => {
+    const c = v.country || "Other";
+    counts[c] = (counts[c] || 0) + 1;
+  });
+
+  const countries = Object.keys(counts)
+    .filter(c => c !== "Other" && counts[c] >= MIN_VENUES_PER_COUNTRY)
+    .sort();
+  if (countries.length < Object.keys(counts).length) countries.push("Other");
+
+  sel.innerHTML = '<option value="">All countries</option>';
+  countries.forEach(c => {
+    const opt = document.createElement("option");
+    opt.value = c;
+    opt.textContent = c;
+    sel.appendChild(opt);
+  });
+  if (countries.includes(current)) sel.value = current;
+}
+
 function renderVenueChips(){
+  renderCountryOptions();
   const sel = $("venueSelect");
   const current = sel.value;
+  const countryFilter = $("countrySelect").value;
+
+  const counts = {};
+  Object.values(venuesCache).forEach(v => { const c = v.country || "Other"; counts[c] = (counts[c] || 0) + 1; });
+  const effectiveCountry = v => (counts[v.country] >= MIN_VENUES_PER_COUNTRY) ? (v.country || "Other") : "Other";
+
   sel.innerHTML = '<option value="">— pick a saved venue, or type a new name below —</option>';
   Object.keys(venuesCache).sort().forEach(name => {
+    const v = venuesCache[name];
+    if (countryFilter && effectiveCountry(v) !== countryFilter) return;
     const opt = document.createElement("option");
     opt.value = name;
     opt.textContent = name;
@@ -266,6 +306,7 @@ async function loadSharedVenues(){
 function applyVenue(name){
   selectedVenueName = name;
   const v = venuesCache[name];
+  $("countrySelect").onchange = renderVenueChips;
   $("venueSelect").value = name;
   $("venueName").value = name;
   $("venueLat").value = v.lat ?? "";

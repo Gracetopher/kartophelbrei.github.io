@@ -1,5 +1,5 @@
 // Bump when deploying change so old caches get replaced
-const CACHE_NAME = "derby-pack-v0.0.001";
+const CACHE_NAME = "derby-pack-v0.0.0010";
 const APP_SHELL = [
   "./",
   "./index.html",
